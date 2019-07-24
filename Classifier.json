@@ -1,0 +1,405 @@
+{
+  "paragraphs": [
+    {
+      "text": "# Basic imports\n\nimport numpy as np\nimport os\nimport sys\nimport tensorflow as tf\nimport matplotlib\nmatplotlib.use(\u0027Agg\u0027)\nimport matplotlib.pyplot as plt\nfrom PIL import Image\n\n# This is needed since the notebook is stored in the object_detection folder.\nsys.path.append(\"/home/tensorflow/model/research/object_detection\")\n\nfrom utils import label_map_util\nfrom utils import visualization_utils as vis_util\n\n",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 3:55:44 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v1",
+      "jobName": "paragraph_1563980670654_1568392534",
+      "id": "20190724-150430_2024650862_q_SVNSMM9FAW1563980667",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Jul 24, 2019 3:04:27 PM",
+      "dateSubmitted": "Jul 24, 2019 3:55:44 PM",
+      "dateStarted": "Jul 24, 2019 3:55:44 PM",
+      "dateFinished": "Jul 24, 2019 3:55:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# Load a (frozen) Tensorflow model into memory\r\nPATH_TO_FROZEN_GRAPH \u003d  \u0027disney_rcnn_frozen/frozen_inference_graph.pb\u0027\r\nPATH_TO_LABELS \u003d \u0027/home/tensorflow/model/workspace1/training/annotations/label_map.pbtxt\u0027\r\n\r\ndetection_graph \u003d tf.Graph()\r\nwith detection_graph.as_default():\r\n  od_graph_def \u003d tf.GraphDef()\r\n  with tf.gfile.GFile(PATH_TO_FROZEN_GRAPH, \u0027rb\u0027) as fid:\r\n    serialized_graph \u003d fid.read()\r\n    od_graph_def.ParseFromString(serialized_graph)\r\n    tf.import_graph_def(od_graph_def, name\u003d\u0027\u0027)\r\n    \r\ncategory_index \u003d label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name\u003dTrue)\r\n",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:13:05 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v1",
+      "jobName": "paragraph_1563981493098_1904627491",
+      "id": "20190724-151813_1463212233_q_SVNSMM9FAW1563980667",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "Traceback (most recent call last):\n  File \"/tmp/zeppelin_pyspark-5122439257480850136.py\", line 331, in \u003cmodule\u003e\n  File \"\u003cstdin\u003e\", line 7, in \u003cmodule\u003e\n  File \"/usr/lib/envs/env-2933-ver-0-a-4.2.9-py-3.5.3/lib/python3.5/site-packages/tensorflow/python/lib/io/file_io.py\", line 122, in read\n    self._preread_check()\n  File \"/usr/lib/envs/env-2933-ver-0-a-4.2.9-py-3.5.3/lib/python3.5/site-packages/tensorflow/python/lib/io/file_io.py\", line 84, in _preread_check\n    compat.as_bytes(self.__name), 1024 * 512)\ntensorflow.python.framework.errors_impl.NotFoundError: disney_rcnn_frozen/frozen_inference_graph.pb; No such file or directory\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/zeppelin_pyspark-5122439257480850136.py\", line 333, in \u003cmodule\u003e\nException: Traceback (most recent call last):\n  File \"/tmp/zeppelin_pyspark-5122439257480850136.py\", line 331, in \u003cmodule\u003e\n  File \"\u003cstdin\u003e\", line 7, in \u003cmodule\u003e\n  File \"/usr/lib/envs/env-2933-ver-0-a-4.2.9-py-3.5.3/lib/python3.5/site-packages/tensorflow/python/lib/io/file_io.py\", line 122, in read\n    self._preread_check()\n  File \"/usr/lib/envs/env-2933-ver-0-a-4.2.9-py-3.5.3/lib/python3.5/site-packages/tensorflow/python/lib/io/file_io.py\", line 84, in _preread_check\n    compat.as_bytes(self.__name), 1024 * 512)\ntensorflow.python.framework.errors_impl.NotFoundError: disney_rcnn_frozen/frozen_inference_graph.pb; No such file or directory\n\n"
+      },
+      "dateCreated": "Jul 24, 2019 3:18:13 PM",
+      "dateSubmitted": "Jul 24, 2019 4:02:44 PM",
+      "dateStarted": "Jul 24, 2019 4:02:44 PM",
+      "dateFinished": "Jul 24, 2019 4:02:44 PM",
+      "status": "ERROR",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# Helper code\ndef load_image_into_numpy_array(image):\n  (im_width, im_height) \u003d image.size\n  return np.array(image.getdata()).reshape(\n      (im_height, im_width, 3)).astype(np.uint8)",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:13:05 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563981549086_-1464962861",
+      "id": "20190724-151909_243872255_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:19:09 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "\n# For the sake of simplicity we will use only 5 images:\n# image1.jpg, image2.jpg\n\nPATH_TO_TEST_IMAGES_DIR \u003d \u0027/home/tensorflow/model/workspace1/training/Final-Test\u0027\nTEST_IMAGE_PATHS \u003d [ os.path.join(PATH_TO_TEST_IMAGES_DIR, \u0027Test{}.jpg\u0027.format(i)) for i in range(1, 7) ]\n\n# Size, in inches, of the output images.\nIMAGE_SIZE \u003d (12, 8)",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:15:43 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563980717797_1029020549",
+      "id": "20190724-150517_640552856_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:05:17 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# Tmp - just to check the imags in the test directory\nprint(TEST_IMAGE_PATHS)",
+      "user": "joanna.zhong@disney.com",
+      "dateUpdated": "Jul 24, 2019 3:26:09 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563981908978_-123205528",
+      "id": "20190724-152508_1073995325_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:25:08 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "\ndef run_inference_for_single_image(image, graph):\n  with graph.as_default():\n    with tf.Session() as sess:\n      # Get handles to input and output tensors\n      ops \u003d tf.get_default_graph().get_operations()\n      all_tensor_names \u003d {output.name for op in ops for output in op.outputs}\n      tensor_dict \u003d {}\n      for key in [\u0027num_detections\u0027, \u0027detection_boxes\u0027, \u0027detection_scores\u0027,\u0027detection_classes\u0027]:\n        tensor_name \u003d key + \u0027:0\u0027\n        if tensor_name in all_tensor_names:\n          tensor_dict[key] \u003d tf.get_default_graph().get_tensor_by_name(tensor_name)\n              \n      image_tensor \u003d tf.get_default_graph().get_tensor_by_name(\u0027image_tensor:0\u0027)\n\n      # Run inference\n      output_dict \u003d sess.run(tensor_dict, feed_dict\u003d{image_tensor: image})\n\n      # all outputs are float32 numpy arrays, so convert types as appropriate\n      output_dict[\u0027num_detections\u0027] \u003d int(output_dict[\u0027num_detections\u0027][0])\n      output_dict[\u0027detection_classes\u0027] \u003d output_dict[\u0027detection_classes\u0027][0].astype(np.int64)\n      output_dict[\u0027detection_boxes\u0027] \u003d output_dict[\u0027detection_boxes\u0027][0]\n      output_dict[\u0027detection_scores\u0027] \u003d output_dict[\u0027detection_scores\u0027][0]\n     \n  return output_dict",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:18:48 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563981705539_-1989528853",
+      "id": "20190724-152145_1028539905_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:21:45 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# to test and visualize the result of the object detection model \r\n\r\nfor image_path in TEST_IMAGE_PATHS:\r\n  image \u003d Image.open(image_path)\r\n  # the array based representation of the image will be used later in order to prepare the\r\n  # result image with boxes and labels on it.\r\n  image_np \u003d load_image_into_numpy_array(image)\r\n  # Expand dimensions since the model expects images to have shape: [1, None, None, 3]\r\n  image_np_expanded \u003d np.expand_dims(image_np, axis\u003d0)\r\n  # Actual detection.\r\n  output_dict \u003d run_inference_for_single_image(image_np_expanded, detection_graph)\r\n  # Visualization of the results of a detection.\r\n  vis_util.visualize_boxes_and_labels_on_image_array(\r\n      image_np,\r\n      output_dict[\u0027detection_boxes\u0027],\r\n      output_dict[\u0027detection_classes\u0027],\r\n      output_dict[\u0027detection_scores\u0027],\r\n      category_index,\r\n      use_normalized_coordinates\u003dTrue,\r\n      line_thickness\u003d8)\r\n  plt.figure(figsize\u003dIMAGE_SIZE)\r\n  plt.imshow(image_np)\r\n  z.showplot(plt)",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:19:38 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563981744201_1725884006",
+      "id": "20190724-152224_1576254025_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:22:24 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "def identifyClasses(image):\r\n    \r\n    image_np \u003d load_image_into_numpy_array(image)\r\n    image_np_expanded \u003d np.expand_dims(image_np, axis\u003d0)\r\n    output_dict \u003d run_inference_for_single_image(image_np_expanded, detection_graph)\r\n\r\n    vis_util.visualize_boxes_and_labels_on_image_array(\r\n      image_np,\r\n      output_dict[\u0027detection_boxes\u0027],\r\n      output_dict[\u0027detection_classes\u0027],\r\n      output_dict[\u0027detection_scores\u0027],\r\n      category_index,\r\n      use_normalized_coordinates\u003dTrue,\r\n      line_thickness\u003d3)\r\n    \r\n    return (output_dict, category_index, image_np)",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:19:38 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563982015343_682043271",
+      "id": "20190724-152655_1804949870_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:26:55 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "title": "Duplicating the code of MyModel here (Since Zeppelin on Qubole cannot make inter notebook calls)",
+      "text": "from keras.models import Sequential\nfrom keras.layers.convolutional import Conv2D\nfrom keras.layers.core import Activation, Flatten, Dense, Dropout\nfrom keras.layers.normalization import BatchNormalization\nfrom keras.layers import MaxPooling2D\n\nfrom sklearn.preprocessing import LabelBinarizer\nfrom keras.regularizers import l2\n\nclass MyModel:\n    \n    base \u003d \"/home/data/\"\n    dataSet \u003d base + \"Disney\"\n    augDir \u003d base + \"augmented/\"\n    imageResizeAR\u003d(150, 150)\n    \n    \n    @staticmethod\n    def build(width, height, depth, classes):\n        # initialize the model with out shape\n        model \u003d Sequential()\n        inputShape \u003d (height, width, depth)\n        activation \u003d \"tanh\"\n        batch_size \u003d 70\n        \n         #1. 1st 2D Conv and Max Pooling layer\n        model.add( Conv2D(16, 7, padding\u003d\"same\", input_shape\u003dinputShape, activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )\n        model.add(BatchNormalization())\n        \n        #2. 2nd 2D Conv and Max pooling layer stacked on top of eachother\n        ## Learn 32 Filters\n        model.add( Conv2D(32, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )        \n        \n        ## After reducing learn another 32 filters\n        model.add( Conv2D(32, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )\n        model.add( Dropout(0.25) ) ## Drop some of the neurons\n        model.add(BatchNormalization())\n        \n        #3 3rd 2D Conv and Max pooling layer stacked\n        ## Learn 64 filters\n        model.add( Conv2D(64, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )\n        ## After reducing learn another 64 filters\n        model.add( Conv2D(64, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )        \n        model.add( Dropout(0.25) ) ## Drop some of the neurons\n        model.add(BatchNormalization())\n        \n        \n        #3 3rd 2D Conv and Max pooling layer stacked\n        ## Learn 64 filters\n        model.add( Conv2D(128, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )\n        ## After reducing learn another 64 filters\n        model.add( Conv2D(128, 3, padding\u003d\"same\", activation\u003dactivation, kernel_regularizer\u003dl2(0.0005)) )\n        model.add( MaxPooling2D(2) )        \n        model.add( Dropout(0.25) ) ## Drop some of the neurons\n        model.add(BatchNormalization())\n        \n        \n        # Flatten and fully conect the layers\n        model.add( Flatten() )\n        \n        ## Start adding dense fully connected neurons\n        # Add 512 hidden neurons\n        model.add( Dense(512, activation\u003dactivation) )\n        model.add(BatchNormalization())\n        model.add( Dropout(0.25) ) ## Drop some of the neurons\n        \n        model.add( Dense(512, activation\u003dactivation) )\n        model.add(BatchNormalization())\n        model.add( Dropout(0.25) ) ## Drop some of the neurons\n        \n        # Add output layer\n        model.add( Dense(classes) )\n        model.add( Activation(\"softmax\") )\n        \n        #return the configured model\n        print(\"[INFO] Done\")\n        \n        return model\n",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:23:41 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563985275757_-1128187221",
+      "id": "20190724-162115_1268080275_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 4:21:15 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# define the labels that are used in this test\nMM_LABELS \u003d [\u0027SPD273152\u0027, \u0027CC819024\u0027, \u0027SPD273162\u0027, \u0027SPD273153\u0027, \u0027CC819025\u0027, \u0027SPD273016\u0027]\nG_LABELS \u003d [\u0027CC603135\u0027, \u0027CC819037\u0027, \u0027CC819035\u0027, \u0027SPD278046\u0027, \u0027CSEU185047\u0027, \u0027SPD275009\u0027, \u0027SPD278041\u0027] ## REVISIT THIS. GET IT FROM ACTUAL TRAINING JOB \nDD_LABELS \u003d [\u0027SPD278053\u0027, \u0027CSEU506063\u0027, \u0027CC819032\u0027, \u0027CC819031\u0027, \u0027CC819030\u0027]\n\ndef getIndex(npArr, toFind):\n    index \u003d -1\n    for lbl in npArr:\n        index+\u003d1\n        if toFind \u003d\u003d lbl:\n            return index\n             \ndef getTrainedModel(modelName, LABELS):\n    t_lb \u003d LabelBinarizer()\n    lb_MM \u003d t_lb.fit_transform(LABELS)    \n    TRAINED_MODEL \u003d \"/home/trained-models/cnn/\" + modelName ## CREATE THIS DIRECTORY\n    trainedModel \u003d MyModel.build(width\u003dMyModel.imageResizeAR[0], height\u003dMyModel.imageResizeAR[1], depth\u003d3, classes\u003dlen(LABELS))\n    trainedModel.load_weights(TRAINED_MODEL)\n    return (t_lb, trainedModel)\n    \n(t_lb_dd, trained_dd) \u003d getTrainedModel(\"Donald_model.ckpt.0015.hdf5\", DD_LABELS)\n(t_lb_mm, trained_mm) \u003d getTrainedModel(\"Donald_model.ckpt.0015.hdf5\", MM_LABELS)\n(t_lb_g, trained_g) \u003d getTrainedModel(\"Donald_model.ckpt.0015.hdf5\", G_LABELS)\n\ndef classify(imageName):\n\n\n    CLASSES \u003d set([\"Mickey Mouse\", \"Donald Duck\", \"Goofy\"])\n    ASSET_DIR \u003d \"/home/data/Disney/\"\n    MIN_THRES \u003d 0.90;\n    PRED_THRES \u003d 90;\n    BOXES \u003d list([])    \n\n\n    ##Read input image to be tested\n    image \u003d Image.open(imageName)\n    image_np \u003d load_image_into_numpy_array(image)\n    \n    i \u003d -1\n    (width, height) \u003d image.size\n\n    (output_dict, category_index, image_np) \u003d identifyClasses(image)\n\n    plt.figure(figsize\u003dIMAGE_SIZE)\n    sp \u003d plt.subplot(1, 1, 1 )\n    sp.axis(\"off\")\n    plt.imshow(image_np)\n    plt.show()\n\n    fig \u003d plt.gcf()\n    fig.set_size_inches( 4 * 5, 1 * 3 )\n\n    for thres in output_dict[\u0027detection_scores\u0027]:\n        i +\u003d 1\n        if thres \u003c MIN_THRES:\n            continue\n            \n        ymin \u003d int((output_dict[\u0027detection_boxes\u0027][i][0]*height))\n        xmin \u003d int((output_dict[\u0027detection_boxes\u0027][i][1]*width))\n        ymax \u003d int((output_dict[\u0027detection_boxes\u0027][i][2]*height))\n        xmax \u003d int((output_dict[\u0027detection_boxes\u0027][i][3]*width))\n\n        box_img \u003d image.crop((xmin, ymin, xmax, ymax))\n        box_class \u003d category_index.get( (output_dict[\u0027detection_classes\u0027][i]) )[\u0027name\u0027]\n\n        #box_img \u003d load_image_into_numpy_array(box_img)    \n        box_img_to_predict \u003d box_img.resize( [150, 150])            \n        box_img_to_predict \u003d load_image_into_numpy_array(box_img_to_predict)    \n        box_img_to_predict \u003d box_img_to_predict.reshape((1,) + box_img_to_predict.shape)\n\n        if box_class \u003d\u003d \"Donald Duck\":\n            \n            output \u003d trained_dd.predict( box_img_to_predict )\n            oLabel \u003d t_lb_dd.inverse_transform(output)\n            output_index \u003d getIndex(t_lb_dd.classes_, oLabel)\n            \n        elif box_class \u003d\u003d \"Mickey Mouse\":               \n                     \n            output \u003d trained_mm.predict(box_img_to_predict)\n            oLabel \u003d t_lb_mm.inverse_transform(output)\n            output_index \u003d getIndex(t_lb_mm.classes_, oLabel)\n            \n        elif box_class \u003d\u003d \"Goofy\":\n           \n            output \u003d trained_g.predict_proba(box_img_to_predict)\n            oLabel \u003d t_lb_g.inverse_transform(output)\n            output_index \u003d getIndex(t_lb_g.classes_, oLabel)\n                \n        \n        output_prob \u003d output[0][output_index] * 100\n       \n        if output_prob \u003c PRED_THRES:\n            print(\"Ignoring the match of %s prediction with %s\" %(oLabel, output_prob))\n            continue\n        \n        print(\"Found %s with acc %s and prediction with %s\" %(i, thres, output_prob))\n        \n        sp \u003d plt.subplot(1, 6, count )\n        sp.axis(\"off\")\n        sp.set_title(box_class +\" : \" + str(oLabel) ) \n        plt.imshow(box_img)\n\n    plt.show()",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:40:19 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563982171198_1771665836",
+      "id": "20190724-152931_422685505_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:29:31 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "# Test classifier\nfor img in TEST_IMAGE_PATHS:\n    classify(img)",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:42:12 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/python"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563982263035_1361846961",
+      "id": "20190724-153103_688889675_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 3:31:03 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "%sh\nsed -n 208p /home/tensorflow/model/research/object_detection/utils/visualization_utils.py",
+      "user": "sahil.shaikh@disney.com",
+      "dateUpdated": "Jul 24, 2019 4:43:14 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v1",
+      "jobName": "paragraph_1563982169936_876739894",
+      "id": "20190724-152929_1294983634_q_SVNSMM9FAW1563980667",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "    font \u003d ImageFont.truetype(\u0027/usr/share/fonts/dejavu/DejaVuSerif-Bold.ttf\u0027, 100)\n"
+      },
+      "dateCreated": "Jul 24, 2019 3:29:29 PM",
+      "dateSubmitted": "Jul 24, 2019 4:43:14 PM",
+      "dateStarted": "Jul 24, 2019 4:43:14 PM",
+      "dateFinished": "Jul 24, 2019 4:43:14 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 1000
+    },
+    {
+      "text": "",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "version": "v0",
+      "jobName": "paragraph_1563986579777_661730892",
+      "id": "20190724-164259_948856142_q_SVNSMM9FAW1563980667",
+      "dateCreated": "Jul 24, 2019 4:42:59 PM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 1000
+    }
+  ],
+  "name": "Classifier",
+  "id": "SVNSMM9FAW1563980667",
+  "angularObjects": {
+    "2EFZFGMV1904531563655061522:shared_process": [],
+    "2EGE4W3TW904531563655061522:shared_process": [],
+    "2EJ5AMJUW904531563655061521:shared_process": [],
+    "2EFU3FS35904531563655061520:shared_process": []
+  },
+  "config": {
+    "isDashboard": false,
+    "defaultLang": "pyspark"
+  },
+  "info": {},
+  "source": "FCN"
+}
